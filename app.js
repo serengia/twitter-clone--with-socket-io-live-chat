@@ -4,6 +4,7 @@ const path = require("path");
 const router = require("./routes");
 
 const loginRoutes = require("./routes/loginRoutes");
+const registerRoutes = require("./routes/registerRoutes");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 app.use("/login", loginRoutes);
+app.use("/register", registerRoutes);
 app.use("/api/v1", router);
 
 app.use("/", (req, res, next) => {
