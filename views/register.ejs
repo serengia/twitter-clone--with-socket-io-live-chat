@@ -2,13 +2,13 @@
     <div class="wrapper">
         <div class="loginContainer">
             <h1>Register</h1>
+
             <form id="registerForm" method="post" onsubmit="event.preventDefault(); validateForm();">
-                <p class="errorMessage"></p>
                 <input type="text" name="firstName" placeholder="First name" required="" aria-label="First Name" />
-                <input type="text" name="lastName" placeholder="Last name" required="" aria-label="Last Name" />
+                <input type="text" name="lastName" placeholder="Last name" aria-label="Last Name" />
                 <input type="text" name="username" placeholder="Username" required="" aria-label="UserName" />
                 <input type="email" name="email" placeholder="Email" required="" aria-label="Email" />
-                <input id="password" type="password" name="password" placeholder="Password" required=""
+                <input id="password" type="password" name="password" placeholder="Password" required
                     aria-label="Password" />
                 <input id="passwordConf" type="password" name="passwordConf" placeholder="Confirm password" required=""
                     aria-label="Confirm Password" />

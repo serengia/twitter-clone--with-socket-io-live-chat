@@ -2,16 +2,21 @@ const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
 const router = require("./routes");
+const bodyParser = require("body-parser");
 
 const loginRoutes = require("./routes/loginRoutes");
 const registerRoutes = require("./routes/registerRoutes");
+const connectDB = require("./utils/connectDB");
 
 const app = express();
+require("dotenv").config();
 
 app.use(morgan("dev"));
 
 app.set("view engine", "ejs");
 app.set("views", "views");
+
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -31,5 +36,7 @@ app.use("/", (req, res, next) => {
 const PORT = 3004;
 
 app.listen(PORT, () => {
+  connectDB();
+
   console.log(`Server started on port ${PORT}`);
 });
