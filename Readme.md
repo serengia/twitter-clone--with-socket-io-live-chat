@@ -29,10 +29,18 @@ To get a local copy up and running follow these simple example steps.
 npm install
 ```
 
-To start the app in your local environment, run
+To start the app in your local environment and  run
 
 ```js
 npm start
+```
+
+### Running tests
+
+To run test, run the following command:
+
+```js
+npm test
 ```
 
 ## Author <a name="author"></a>
