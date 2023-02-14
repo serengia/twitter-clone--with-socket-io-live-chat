@@ -1,5 +1,6 @@
-const User = require("../models/User");
 const bcrypt = require("bcrypt");
+
+const User = require("../models/userSchema");
 
 exports.register = async (req, res, next) => {
   const firstName = req.body.firstName.trim();
@@ -12,19 +13,20 @@ exports.register = async (req, res, next) => {
     const payload = req.body;
     payload.password = null;
     payload.errorMessage = "Please provide all the values.";
-    return res.status(200).render("register", payload);
+    return res.status(400).render("register", payload);
   }
 
   const foundUser = await User.findOne({
     $or: [{ username: username }, { email: email }],
   });
 
-  if (!foundUser) {
+  if (foundUser) {
+    console.log("That email is already in use.");
     return res.status(400).render("register");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  console.log("HASHED PASS...", hashedPassword);
+
   //   Save to db
   const user = await User.create({
     firstName,
@@ -34,11 +36,13 @@ exports.register = async (req, res, next) => {
     password: hashedPassword,
   });
 
+  // Update user session
   req.session.user = user;
 
   res.status(300).redirect("/");
 };
 
+// Login
 exports.login = async (req, res, next) => {
   try {
     const inputValue = req.body.logUsername;
@@ -52,16 +56,32 @@ exports.login = async (req, res, next) => {
       $or: [{ username: inputValue }, { email: inputValue }],
     });
 
-    const result = await bcrypt.compare(password, user.password);
-
-    if (!result) {
+    if (!user) {
+      console.log("Password", "email/username is incorrect");
       return res.status(400).render("login");
     }
 
+    const result = await bcrypt.compare(password, user.password);
+
+    if (!result) {
+      return res.status(403).render("login");
+    }
+
+    // Update user session
     req.session.user = user;
 
     res.status(200).redirect("/");
   } catch (err) {
     console.log(err);
+  }
+};
+
+// Log out
+exports.logout = async (req, res, next) => {
+  if (req.session) {
+    // destroy user session
+    req.session.destroy(() => {
+      res.redirect("/login");
+    });
   }
 };

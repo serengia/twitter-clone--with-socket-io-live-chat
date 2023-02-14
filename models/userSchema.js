@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     require: true,
     unique: true,
   },
-  profilePic: { type: String, default: "/images/user/user1" },
+  profilePic: { type: String, default: "/images/user/default.jpg" },
   createdAt: {
     type: Date,
     default: Date.now(),

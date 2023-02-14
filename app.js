@@ -1,13 +1,15 @@
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
-const router = require("./routes");
+const postRouter = require("./routes/api/postRouter");
 const bodyParser = require("body-parser");
 
-const loginRoutes = require("./routes/loginRoutes");
-const registerRoutes = require("./routes/registerRoutes");
+const loginRouter = require("./routes/loginRouter");
+const registerRouter = require("./routes/registerRouter");
+const logoutRouter = require("./routes/logoutRouter");
 const connectDB = require("./utils/connectDB");
 const session = require("express-session");
+const { isAuthenticated } = require("./middleware/middleware");
 
 const app = express();
 require("dotenv").config();
@@ -30,13 +32,14 @@ app.use(
   })
 );
 
-app.use("/login", loginRoutes);
-app.use("/register", registerRoutes);
-app.use("/api/v1", router);
+app.use("/login", loginRouter);
+app.use("/register", registerRouter);
+app.use("/logout", logoutRouter);
+app.use("/api/v1/posts", postRouter);
 
-app.use("/", (req, res, next) => {
+app.use("/", isAuthenticated, (req, res, next) => {
   const payload = {
-    page: "Home page",
+    pageTitle: "Home page",
     userLoggedIn: req.session.user,
   };
   res.status(200).render("home", payload);
