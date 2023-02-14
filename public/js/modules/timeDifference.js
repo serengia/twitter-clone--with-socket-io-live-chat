@@ -1,3 +1,4 @@
+/* eslint-disable */
 export function timeDifference(current, previous) {
   const msPerMinute = 60 * 1000;
   const msPerHour = msPerMinute * 60;
@@ -19,6 +20,6 @@ export function timeDifference(current, previous) {
   } else if (elapsed < msPerYear) {
     return Math.round(elapsed / msPerMonth) + " months ago";
   } else {
-    return Math.round(elapsed / msPerYear) + " years ago";
+    return `${Math.round(elapsed / msPerYear)} years ago`;
   }
 }

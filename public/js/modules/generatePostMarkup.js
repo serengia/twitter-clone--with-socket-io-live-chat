@@ -1,11 +1,10 @@
 import { timeDifference } from "./timeDifference";
 
 export function generatePostMarkup(postData) {
-  console.log("CHECKING DATA->", postData);
-
   const postedBy = postData.postedBy;
 
-  const displayName = postedBy.firstName + " " + postedBy.lastName;
+  const displayName = `${postedBy.firstName} ${postedBy.lastName}`;
+
   const timestamp = timeDifference(new Date(), new Date(postData.createdAt));
 
   return `<div class='post'>
@@ -25,18 +24,18 @@ export function generatePostMarkup(postData) {
                         </div>
                         <div class='postFooter'>
                             <div class='postButtonContainer'>
-                                <button>
+                                <button class="commentButton">
                                     <i class='far fa-comment'></i>
                                 </button>
                             </div>
   
                             <div class='postButtonContainer'>
-                                <button>
+                                <button class="retweetButton">
                                     <i class='fas fa-retweet'></i>
                                 </button>
                             </div>
                             <div class='postButtonContainer'>
-                                <button>
+                                <button class="likeButton">
                                     <i class='far fa-heart'></i>
                                 </button>
                             </div>

@@ -1,14 +1,15 @@
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
-const postRouter = require("./routes/api/postRouter");
+
+const session = require("express-session");
 const bodyParser = require("body-parser");
 
+const postRouter = require("./routes/api/postRouter");
 const loginRouter = require("./routes/loginRouter");
 const registerRouter = require("./routes/registerRouter");
 const logoutRouter = require("./routes/logoutRouter");
 const connectDB = require("./utils/connectDB");
-const session = require("express-session");
 const { isAuthenticated } = require("./middleware/middleware");
 
 const app = express();

@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
   profilePic: { type: String, default: "/images/user/default.jpg" },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   createdAt: {
     type: Date,
     default: Date.now(),

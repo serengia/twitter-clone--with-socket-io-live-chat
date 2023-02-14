@@ -1,17 +1,16 @@
 {
   "env": {
     "browser": true,
-    "es2021": true,
-    "commonjs": true
+    "commonjs": true,
+    "es2021": true
   },
   "extends": "airbnb-base",
   "overrides": [],
   "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module"
+    "ecmaVersion": "latest"
   },
   "rules": {
-    "quotes": "off",
+    "quotes": ["error", "double", { "allowTemplateLiterals": true }],
     "linebreak-style": ["error", "windows"],
     "no-unused-vars": [
       "error",
@@ -30,7 +29,6 @@
     "arrow-body-style": "off",
     "implicit-arrow-linebreak": "off",
     "no-trailing-spaces": "off",
-    "prefer-arrow-callback": "off",
-    "import/prefer-default-export": "off"
+    "prefer-arrow-callback": "off"
   }
 }

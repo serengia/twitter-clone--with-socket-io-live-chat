@@ -1,5 +1,6 @@
 import axios from "axios";
 import { generatePostMarkup } from "./modules/generatePostMarkup";
+import { loadPosts } from "./modules/postsHandler";
 
 const postTextArea = document.getElementById("postTextarea");
 const submitButton = document.getElementById("submitPostButton");
@@ -15,7 +16,7 @@ postTextArea.addEventListener("keyup", (e) => {
   }
 });
 
-submitPostButton.addEventListener("click", async (e) => {
+submitButton.addEventListener("click", async () => {
   const data = { content: postTextArea.value };
   try {
     const res = await axios.post("/api/v1/posts", data);
@@ -29,20 +30,12 @@ submitPostButton.addEventListener("click", async (e) => {
   }
 });
 
-const loadPosts = async () => {
-  try {
-    const res = await axios.get("/api/v1/posts");
+// Load posts
+loadPosts(postsContainer);
 
-    const postMarkup = res.data
-      .map((postData) => {
-        return generatePostMarkup(postData);
-      })
-      .join("");
+postsContainer.addEventListener("click", (e) => {
+  const likeButton = e.target.closest(".likeButton");
 
-    postsContainer.innerHTML = postMarkup;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-loadPosts();
+  if (!likeButton) return;
+  console.log("CHECK EV->", likeButton);
+});
