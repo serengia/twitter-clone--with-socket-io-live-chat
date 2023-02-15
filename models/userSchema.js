@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema({
   },
   profilePic: { type: String, default: "/images/user/default.jpg" },
   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  retweets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   createdAt: {
     type: Date,
     default: Date.now(),

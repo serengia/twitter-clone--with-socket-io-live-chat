@@ -33,9 +33,56 @@ submitButton.addEventListener("click", async () => {
 // Load posts
 loadPosts(postsContainer);
 
-postsContainer.addEventListener("click", (e) => {
+postsContainer.addEventListener("click", async (e) => {
   const likeButton = e.target.closest(".likeButton");
 
   if (!likeButton) return;
-  console.log("CHECK EV->", likeButton);
+  const id = likeButton.closest(".post").dataset.id;
+
+  const res = await axios.patch(`/api/v1/posts/${id}/like`);
+  const postData = res.data;
+  const likesCountWrapper = likeButton.querySelector("span");
+  if (!likesCountWrapper) return;
+  likesCountWrapper.textContent = `${postData.likes.length || ""}`;
+
+  const loggedInUserData = JSON.parse(
+    document.querySelector("body").dataset.loggedInUser
+  );
+
+  if (postData.likes.includes(loggedInUserData._id)) {
+    likeButton.classList.add("active");
+  } else {
+    likeButton.classList.remove("active");
+  }
+  console.log("FROM KK", loggedInUserData);
+
+  console.log("What I get back...", res.data);
+});
+
+postsContainer.addEventListener("click", async (e) => {
+  const retweetButton = e.target.closest(".retweetButton");
+
+  if (!retweetButton) return;
+  const id = retweetButton.closest(".post").dataset.id;
+
+  const res = await axios.post(`/api/v1/posts/${id}/retweet`);
+  const retweetData = res.data;
+  console.log(retweetData);
+
+  // const retweetsCountWrapper = retweetButton.querySelector("span");
+  // if (!retweetsCountWrapper) return;
+  // retweetsCountWrapper.textContent = `${postData.retweets.length || ""}`;
+
+  // const loggedInUserData = JSON.parse(
+  //   document.querySelector("body").dataset.loggedInUser
+  // );
+
+  // if (postData.retweets.includes(loggedInUserData._id)) {
+  //   retweetButton.classList.add("active");
+  // } else {
+  //   retweetButton.classList.remove("active");
+  // }
+  // console.log("FROM KK", loggedInUserData);
+
+  // console.log("What I get back...", res.data);
 });

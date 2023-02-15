@@ -1,5 +1,7 @@
 <div class="postFormContainer">
-    <div class="userImageContainer"><img alt="User's profile picture" src="<%= userLoggedIn.profilePic %>" /></div>
+    <div class="userImageContainer"><img alt="User's profile picture" src="<%= userLoggedIn.profilePic %>" />
+        <%= userLoggedIn.firstName %>
+    </div>
     <div class="textareaContainer">
         <textarea id="postTextarea" placeholder="What's happening?"></textarea>
         <div class="buttonsContainer">

@@ -5436,7 +5436,9 @@ function generatePostMarkup(postData) {
   var postedBy = postData.postedBy;
   var displayName = "".concat(postedBy.firstName, " ").concat(postedBy.lastName);
   var timestamp = (0, _timeDifference.timeDifference)(new Date(), new Date(postData.createdAt));
-  return "<div class='post'>\n  \n                <div class='mainContentContainer'>\n                    <div class='userImageContainer'>\n                        <img src='".concat(postedBy.profilePic, "'>\n                    </div>\n                    <div class='postContentContainer'>\n                        <div class='header'>\n                            <a href='/profile/").concat(postedBy.username, "' class='displayName'>").concat(displayName, "</a>\n                            <span class='username'>@").concat(postedBy.username, "</span>\n                            <span class='date'>").concat(timestamp, "</span>\n                        </div>\n                        <div class='postBody'>\n                            <span>").concat(postData.content, "</span>\n                        </div>\n                        <div class='postFooter'>\n                            <div class='postButtonContainer'>\n                                <button class=\"commentButton\">\n                                    <i class='far fa-comment'></i>\n                                </button>\n                            </div>\n  \n                            <div class='postButtonContainer'>\n                                <button class=\"retweetButton\">\n                                    <i class='fas fa-retweet'></i>\n                                </button>\n                            </div>\n                            <div class='postButtonContainer'>\n                                <button class=\"likeButton\">\n                                    <i class='far fa-heart'></i>\n                                </button>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>");
+  var loggedInUserData = JSON.parse(document.querySelector("body").dataset.loggedInUser);
+  var likeButtonActiveClass = postData.likes.includes(loggedInUserData._id) ? "active" : "";
+  return "<div class='post' data-id=\"".concat(postData._id, "\">\n  \n                <div class='mainContentContainer'>\n                    <div class='userImageContainer'>\n                        <img src='").concat(postedBy.profilePic, "'>\n                    </div>\n                    <div class='postContentContainer'>\n                        <div class='header'>\n                            <a href='/profile/").concat(postedBy.username, "' class='displayName'>").concat(displayName, "</a>\n                            <span class='username'>@").concat(postedBy.username, "</span>\n                            <span class='date'>").concat(timestamp, "</span>\n                        </div>\n                        <div class='postBody'>\n                            <span>").concat(postData.content, "</span>\n                        </div>\n                        <div class='postFooter'>\n                            <div class='postButtonContainer'>\n                                <button class=\"commentButton\">\n                                    <i class='far fa-comment'></i>\n                                </button>\n                            </div>\n  \n                            <div class='postButtonContainer green'>\n                                <button class=\"retweetButton\">\n                                    <i class='fas fa-retweet'></i>\n                                </button>\n                            </div>\n                            <div class='postButtonContainer red'>\n                                <button class=\"likeButton ").concat(likeButtonActiveClass, "\">\n                                    <i class='far fa-heart'></i>\n                                    <span>").concat(postData.likes.length || "", "</span>\n                                </button>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>");
 }
 },{"./timeDifference":"modules/timeDifference.js"}],"modules/postsHandler.js":[function(require,module,exports) {
 "use strict";
@@ -5539,11 +5541,98 @@ submitButton.addEventListener("click", /*#__PURE__*/_asyncToGenerator( /*#__PURE
 
 // Load posts
 (0, _postsHandler.loadPosts)(postsContainer);
-postsContainer.addEventListener("click", function (e) {
-  var likeButton = e.target.closest(".likeButton");
-  if (!likeButton) return;
-  console.log("CHECK EV->", likeButton);
-});
+postsContainer.addEventListener("click", /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
+    var likeButton, id, res, postData, likesCountWrapper, loggedInUserData;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          likeButton = e.target.closest(".likeButton");
+          if (likeButton) {
+            _context2.next = 3;
+            break;
+          }
+          return _context2.abrupt("return");
+        case 3:
+          id = likeButton.closest(".post").dataset.id;
+          _context2.next = 6;
+          return _axios.default.patch("/api/v1/posts/".concat(id, "/like"));
+        case 6:
+          res = _context2.sent;
+          postData = res.data;
+          likesCountWrapper = likeButton.querySelector("span");
+          if (likesCountWrapper) {
+            _context2.next = 11;
+            break;
+          }
+          return _context2.abrupt("return");
+        case 11:
+          likesCountWrapper.textContent = "".concat(postData.likes.length || "");
+          loggedInUserData = JSON.parse(document.querySelector("body").dataset.loggedInUser);
+          if (postData.likes.includes(loggedInUserData._id)) {
+            likeButton.classList.add("active");
+          } else {
+            likeButton.classList.remove("active");
+          }
+          console.log("FROM KK", loggedInUserData);
+          console.log("What I get back...", res.data);
+        case 16:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2);
+  }));
+  return function (_x) {
+    return _ref2.apply(this, arguments);
+  };
+}());
+postsContainer.addEventListener("click", /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
+    var retweetButton, id, res, retweetData;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          retweetButton = e.target.closest(".retweetButton");
+          if (retweetButton) {
+            _context3.next = 3;
+            break;
+          }
+          return _context3.abrupt("return");
+        case 3:
+          id = retweetButton.closest(".post").dataset.id;
+          _context3.next = 6;
+          return _axios.default.post("/api/v1/posts/".concat(id, "/retweet"));
+        case 6:
+          res = _context3.sent;
+          retweetData = res.data;
+          console.log(retweetData);
+
+          // const retweetsCountWrapper = retweetButton.querySelector("span");
+          // if (!retweetsCountWrapper) return;
+          // retweetsCountWrapper.textContent = `${postData.retweets.length || ""}`;
+
+          // const loggedInUserData = JSON.parse(
+          //   document.querySelector("body").dataset.loggedInUser
+          // );
+
+          // if (postData.retweets.includes(loggedInUserData._id)) {
+          //   retweetButton.classList.add("active");
+          // } else {
+          //   retweetButton.classList.remove("active");
+          // }
+          // console.log("FROM KK", loggedInUserData);
+
+          // console.log("What I get back...", res.data);
+        case 9:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3);
+  }));
+  return function (_x2) {
+    return _ref3.apply(this, arguments);
+  };
+}());
 },{"axios":"../../node_modules/axios/index.js","./modules/generatePostMarkup":"modules/generatePostMarkup.js","./modules/postsHandler":"modules/postsHandler.js"}],"C:/Users/serengia/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -5569,7 +5658,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64177" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53749" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

@@ -32,3 +32,37 @@ exports.getPosts = async (req, res) => {
     console.log(error);
   }
 };
+
+exports.updatePostLikes = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    if (!req.session.user) return;
+    const userId = req.session.user._id;
+
+    const isLiked = req.session.user.likes?.includes(postId);
+
+    const option = isLiked ? "$pull" : "$addToSet";
+
+    // Updating users' likes array
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { [option]: { likes: postId } },
+      { new: true }
+    );
+
+    if (updatedUser) req.session.user = updatedUser;
+
+    // Updating posts' likes array
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { [option]: { likes: userId } },
+      { new: true }
+    );
+
+    res.status(200).send(updatedPost);
+  } catch (error) {
+    console.log(error);
+
+    res.status(400);
+  }
+};

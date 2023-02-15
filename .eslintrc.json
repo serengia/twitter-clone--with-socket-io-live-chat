@@ -31,6 +31,7 @@
     "implicit-arrow-linebreak": "off",
     "no-trailing-spaces": "off",
     "prefer-arrow-callback": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "indent": "off"
   }
 }

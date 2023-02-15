@@ -17,7 +17,7 @@ exports.register = async (req, res, next) => {
   }
 
   const foundUser = await User.findOne({
-    $or: [{ username: username }, { email: email }],
+    $or: [{ username }, { email }],
   });
 
   if (foundUser) {
