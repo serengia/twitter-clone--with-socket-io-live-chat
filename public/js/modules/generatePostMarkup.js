@@ -55,7 +55,7 @@ export function generatePostMarkup(postDataObj) {
                 </div>
                 <div class='postFooter'>
                     <div class='postButtonContainer'>
-                        <button class="commentButton">
+                        <button class="commentButton" data-bs-toggle='modal' data-bs-target='#replyModal'>
                             <i class='far fa-comment'></i>
                         </button>
                     </div>

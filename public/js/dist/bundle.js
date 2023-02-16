@@ -5447,7 +5447,7 @@ function generatePostMarkup(postDataObj) {
   if (isRetweet) {
     retweetText = "<span>\n                        <i class='fas fa-retweet'></i>\n                        Retweeted by <a href='/profile/".concat(retweetedBy, "'>@").concat(retweetedBy, "</a>    \n                    </span>");
   }
-  return "<div class='post' data-id=\"".concat(postData._id, "\">\n    <div class='postActionContainer'>\n        ").concat(retweetText, "\n    </div>\n        <div class='mainContentContainer'>\n            <div class='userImageContainer'>\n                <img src='").concat(postedBy.profilePic, "'>\n            </div>\n            <div class='postContentContainer'>\n                <div class='header'>\n                    <a href='/profile/").concat(postedBy.username, "' class='displayName'>").concat(displayName, "</a>\n                    <span class='username'>@").concat(postedBy.username, "</span>\n                    <span class='date'>").concat(timestamp, "</span>\n                </div>\n                <div class='postBody'>\n                    <span>").concat(postData.content, "</span>\n                </div>\n                <div class='postFooter'>\n                    <div class='postButtonContainer'>\n                        <button class=\"commentButton\">\n                            <i class='far fa-comment'></i>\n                        </button>\n                    </div>\n\n                    <div class='postButtonContainer green'>\n                        <button class=\"retweetButton ").concat(retweetButtonActiveClass, "\">\n                            <i class='fas fa-retweet'></i>\n                            <span>").concat(postData.retweetUsers.length || "", "</span>\n                        </button>\n                    </div>\n                    <div class='postButtonContainer red'>\n                        <button class=\"likeButton ").concat(likeButtonActiveClass, "\">\n                            <i class='far fa-heart'></i>\n                            <span>").concat(postData.likes.length || "", "</span>\n                        </button>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>");
+  return "<div class='post' data-id=\"".concat(postData._id, "\">\n    <div class='postActionContainer'>\n        ").concat(retweetText, "\n    </div>\n        <div class='mainContentContainer'>\n            <div class='userImageContainer'>\n                <img src='").concat(postedBy.profilePic, "'>\n            </div>\n            <div class='postContentContainer'>\n                <div class='header'>\n                    <a href='/profile/").concat(postedBy.username, "' class='displayName'>").concat(displayName, "</a>\n                    <span class='username'>@").concat(postedBy.username, "</span>\n                    <span class='date'>").concat(timestamp, "</span>\n                </div>\n                <div class='postBody'>\n                    <span>").concat(postData.content, "</span>\n                </div>\n                <div class='postFooter'>\n                    <div class='postButtonContainer'>\n                        <button class=\"commentButton\" data-bs-toggle='modal' data-bs-target='#replyModal'>\n                            <i class='far fa-comment'></i>\n                        </button>\n                    </div>\n\n                    <div class='postButtonContainer green'>\n                        <button class=\"retweetButton ").concat(retweetButtonActiveClass, "\">\n                            <i class='fas fa-retweet'></i>\n                            <span>").concat(postData.retweetUsers.length || "", "</span>\n                        </button>\n                    </div>\n                    <div class='postButtonContainer red'>\n                        <button class=\"likeButton ").concat(likeButtonActiveClass, "\">\n                            <i class='far fa-heart'></i>\n                            <span>").concat(postData.likes.length || "", "</span>\n                        </button>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>");
 }
 },{"./timeDifference":"modules/timeDifference.js"}],"modules/postsHandler.js":[function(require,module,exports) {
 "use strict";
@@ -5507,17 +5507,25 @@ function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyri
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 var postTextArea = document.getElementById("postTextarea");
-var submitButton = document.getElementById("submitPostButton");
+var postTextArea2 = document.getElementById("replyTextarea");
+var submitPostButton = document.getElementById("submitPostButton");
+var submitReplyButton = document.getElementById("submitReplyButton");
 var postsContainer = document.querySelector(".postsContainer");
-postTextArea.addEventListener("keyup", function (e) {
-  var value = e.target.value.trim();
-  if (value.length === 0) {
-    submitButton.setAttribute("disabled", true);
-  } else {
-    submitButton.removeAttribute("disabled");
-  }
+console.log("AREASSS", postTextArea, postTextArea2);
+[postTextArea, postTextArea2].forEach(function (ele) {
+  ele.addEventListener("keyup", function (e) {
+    var textbox = e.target;
+    var value = textbox.value.trim();
+    var isModel = textbox.closest(".modal");
+    var submitButton = isModel ? submitReplyButton : submitPostButton;
+    if (value.length === 0) {
+      submitButton.setAttribute("disabled", true);
+    } else {
+      submitButton.removeAttribute("disabled");
+    }
+  });
 });
-submitButton.addEventListener("click", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+submitPostButton.addEventListener("click", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
   var data, res, postMarkup;
   return _regeneratorRuntime().wrap(function _callee$(_context) {
     while (1) switch (_context.prev = _context.next) {
@@ -5533,7 +5541,7 @@ submitButton.addEventListener("click", /*#__PURE__*/_asyncToGenerator( /*#__PURE
         console.log("DATAA>", res.data);
         postMarkup = (0, _generatePostMarkup.generatePostMarkup)(res.data);
         postsContainer.insertAdjacentHTML("afterbegin", postMarkup);
-        submitButton.setAttribute("disabled", true);
+        submitPostButton.setAttribute("disabled", true);
         postTextArea.value = "";
         console.log(res);
         _context.next = 16;
@@ -5667,7 +5675,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53749" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54156" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

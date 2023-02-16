@@ -3,20 +3,31 @@ import { generatePostMarkup } from "./modules/generatePostMarkup";
 import { loadPosts } from "./modules/postsHandler";
 
 const postTextArea = document.getElementById("postTextarea");
-const submitButton = document.getElementById("submitPostButton");
+const postTextArea2 = document.getElementById("replyTextarea");
+const submitPostButton = document.getElementById("submitPostButton");
+const submitReplyButton = document.getElementById("submitReplyButton");
 const postsContainer = document.querySelector(".postsContainer");
 
-postTextArea.addEventListener("keyup", (e) => {
-  const value = e.target.value.trim();
+console.log("AREASSS", postTextArea, postTextArea2);
 
-  if (value.length === 0) {
-    submitButton.setAttribute("disabled", true);
-  } else {
-    submitButton.removeAttribute("disabled");
-  }
+[postTextArea, postTextArea2].forEach((ele) => {
+  ele.addEventListener("keyup", (e) => {
+    const textbox = e.target;
+    const value = textbox.value.trim();
+
+    const isModel = textbox.closest(".modal");
+
+    const submitButton = isModel ? submitReplyButton : submitPostButton;
+
+    if (value.length === 0) {
+      submitButton.setAttribute("disabled", true);
+    } else {
+      submitButton.removeAttribute("disabled");
+    }
+  });
 });
 
-submitButton.addEventListener("click", async () => {
+submitPostButton.addEventListener("click", async () => {
   const data = { content: postTextArea.value };
   try {
     const res = await axios.post("/api/v1/posts", data);
@@ -24,7 +35,7 @@ submitButton.addEventListener("click", async () => {
 
     const postMarkup = generatePostMarkup(res.data);
     postsContainer.insertAdjacentHTML("afterbegin", postMarkup);
-    submitButton.setAttribute("disabled", true);
+    submitPostButton.setAttribute("disabled", true);
     postTextArea.value = "";
     console.log(res);
   } catch (error) {

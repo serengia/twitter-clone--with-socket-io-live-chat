@@ -1,0 +1,26 @@
+<div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="replyModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="replyModalLabel">Reply</h5>
+                <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="originalPostContainer"></div>
+                <div class="postFormContainer">
+                    <div class="userImageContainer"><img alt="User's profile picture"
+                            src="<%= userLoggedIn.profilePic%>" /></div>
+                    <div class="textareaContainer">
+                        <textarea id="replyTextarea" placeholder="What's happening?"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary" id="submitReplyButton" type="button" disabled>Reply</button>
+            </div>
+        </div>
+    </div>
+</div>
