@@ -5432,13 +5432,22 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.generatePostMarkup = generatePostMarkup;
 var _timeDifference = require("./timeDifference");
-function generatePostMarkup(postData) {
+function generatePostMarkup(postDataObj) {
+  if (!postDataObj) return console.log("Post object is null");
+  var isRetweet = (postDataObj === null || postDataObj === void 0 ? void 0 : postDataObj.retweetData) !== undefined;
+  var retweetedBy = isRetweet ? postDataObj.postedBy.username : null;
+  var postData = isRetweet ? postDataObj.retweetData : postDataObj;
   var postedBy = postData.postedBy;
   var displayName = "".concat(postedBy.firstName, " ").concat(postedBy.lastName);
   var timestamp = (0, _timeDifference.timeDifference)(new Date(), new Date(postData.createdAt));
   var loggedInUserData = JSON.parse(document.querySelector("body").dataset.loggedInUser);
   var likeButtonActiveClass = postData.likes.includes(loggedInUserData._id) ? "active" : "";
-  return "<div class='post' data-id=\"".concat(postData._id, "\">\n  \n                <div class='mainContentContainer'>\n                    <div class='userImageContainer'>\n                        <img src='").concat(postedBy.profilePic, "'>\n                    </div>\n                    <div class='postContentContainer'>\n                        <div class='header'>\n                            <a href='/profile/").concat(postedBy.username, "' class='displayName'>").concat(displayName, "</a>\n                            <span class='username'>@").concat(postedBy.username, "</span>\n                            <span class='date'>").concat(timestamp, "</span>\n                        </div>\n                        <div class='postBody'>\n                            <span>").concat(postData.content, "</span>\n                        </div>\n                        <div class='postFooter'>\n                            <div class='postButtonContainer'>\n                                <button class=\"commentButton\">\n                                    <i class='far fa-comment'></i>\n                                </button>\n                            </div>\n  \n                            <div class='postButtonContainer green'>\n                                <button class=\"retweetButton\">\n                                    <i class='fas fa-retweet'></i>\n                                </button>\n                            </div>\n                            <div class='postButtonContainer red'>\n                                <button class=\"likeButton ").concat(likeButtonActiveClass, "\">\n                                    <i class='far fa-heart'></i>\n                                    <span>").concat(postData.likes.length || "", "</span>\n                                </button>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>");
+  var retweetButtonActiveClass = postData.retweetUsers.includes(loggedInUserData._id) ? "active" : "";
+  var retweetText = "";
+  if (isRetweet) {
+    retweetText = "<span>\n                        <i class='fas fa-retweet'></i>\n                        Retweeted by <a href='/profile/".concat(retweetedBy, "'>@").concat(retweetedBy, "</a>    \n                    </span>");
+  }
+  return "<div class='post' data-id=\"".concat(postData._id, "\">\n    <div class='postActionContainer'>\n        ").concat(retweetText, "\n    </div>\n        <div class='mainContentContainer'>\n            <div class='userImageContainer'>\n                <img src='").concat(postedBy.profilePic, "'>\n            </div>\n            <div class='postContentContainer'>\n                <div class='header'>\n                    <a href='/profile/").concat(postedBy.username, "' class='displayName'>").concat(displayName, "</a>\n                    <span class='username'>@").concat(postedBy.username, "</span>\n                    <span class='date'>").concat(timestamp, "</span>\n                </div>\n                <div class='postBody'>\n                    <span>").concat(postData.content, "</span>\n                </div>\n                <div class='postFooter'>\n                    <div class='postButtonContainer'>\n                        <button class=\"commentButton\">\n                            <i class='far fa-comment'></i>\n                        </button>\n                    </div>\n\n                    <div class='postButtonContainer green'>\n                        <button class=\"retweetButton ").concat(retweetButtonActiveClass, "\">\n                            <i class='fas fa-retweet'></i>\n                            <span>").concat(postData.retweetUsers.length || "", "</span>\n                        </button>\n                    </div>\n                    <div class='postButtonContainer red'>\n                        <button class=\"likeButton ").concat(likeButtonActiveClass, "\">\n                            <i class='far fa-heart'></i>\n                            <span>").concat(postData.likes.length || "", "</span>\n                        </button>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>");
 }
 },{"./timeDifference":"modules/timeDifference.js"}],"modules/postsHandler.js":[function(require,module,exports) {
 "use strict";
@@ -5521,22 +5530,23 @@ submitButton.addEventListener("click", /*#__PURE__*/_asyncToGenerator( /*#__PURE
         return _axios.default.post("/api/v1/posts", data);
       case 4:
         res = _context.sent;
+        console.log("DATAA>", res.data);
         postMarkup = (0, _generatePostMarkup.generatePostMarkup)(res.data);
         postsContainer.insertAdjacentHTML("afterbegin", postMarkup);
         submitButton.setAttribute("disabled", true);
         postTextArea.value = "";
         console.log(res);
-        _context.next = 15;
+        _context.next = 16;
         break;
-      case 12:
-        _context.prev = 12;
+      case 13:
+        _context.prev = 13;
         _context.t0 = _context["catch"](1);
         console.log("SEE ERROR>>", _context.t0);
-      case 15:
+      case 16:
       case "end":
         return _context.stop();
     }
-  }, _callee, null, [[1, 12]]);
+  }, _callee, null, [[1, 13]]);
 })));
 
 // Load posts
@@ -5588,7 +5598,7 @@ postsContainer.addEventListener("click", /*#__PURE__*/function () {
 }());
 postsContainer.addEventListener("click", /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
-    var retweetButton, id, res, retweetData;
+    var retweetButton, id, res, postData, retweetsCountWrapper, loggedInUserData;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) switch (_context3.prev = _context3.next) {
         case 0:
@@ -5604,26 +5614,25 @@ postsContainer.addEventListener("click", /*#__PURE__*/function () {
           return _axios.default.post("/api/v1/posts/".concat(id, "/retweet"));
         case 6:
           res = _context3.sent;
-          retweetData = res.data;
-          console.log(retweetData);
-
-          // const retweetsCountWrapper = retweetButton.querySelector("span");
-          // if (!retweetsCountWrapper) return;
-          // retweetsCountWrapper.textContent = `${postData.retweets.length || ""}`;
-
-          // const loggedInUserData = JSON.parse(
-          //   document.querySelector("body").dataset.loggedInUser
-          // );
-
-          // if (postData.retweets.includes(loggedInUserData._id)) {
-          //   retweetButton.classList.add("active");
-          // } else {
-          //   retweetButton.classList.remove("active");
-          // }
+          postData = res.data;
+          retweetsCountWrapper = retweetButton.querySelector("span");
+          if (retweetsCountWrapper) {
+            _context3.next = 11;
+            break;
+          }
+          return _context3.abrupt("return");
+        case 11:
+          retweetsCountWrapper.textContent = "".concat(postData.retweetUsers.length || "");
+          loggedInUserData = JSON.parse(document.querySelector("body").dataset.loggedInUser);
+          if (postData.retweetUsers.includes(loggedInUserData._id)) {
+            retweetButton.classList.add("active");
+          } else {
+            retweetButton.classList.remove("active");
+          }
           // console.log("FROM KK", loggedInUserData);
 
           // console.log("What I get back...", res.data);
-        case 9:
+        case 14:
         case "end":
           return _context3.stop();
       }

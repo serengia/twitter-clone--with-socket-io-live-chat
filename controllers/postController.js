@@ -26,8 +26,13 @@ exports.getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
       .populate("postedBy")
+      .populate("retweetData")
       .sort({ createdAt: -1 });
-    res.status(200).send(posts);
+
+    const results = await User.populate(posts, {
+      path: "retweetData.postedBy",
+    });
+    res.status(200).send(results);
   } catch (error) {
     console.log(error);
   }

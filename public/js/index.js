@@ -20,6 +20,8 @@ submitButton.addEventListener("click", async () => {
   const data = { content: postTextArea.value };
   try {
     const res = await axios.post("/api/v1/posts", data);
+    console.log("DATAA>", res.data);
+
     const postMarkup = generatePostMarkup(res.data);
     postsContainer.insertAdjacentHTML("afterbegin", postMarkup);
     submitButton.setAttribute("disabled", true);
@@ -66,22 +68,21 @@ postsContainer.addEventListener("click", async (e) => {
   const id = retweetButton.closest(".post").dataset.id;
 
   const res = await axios.post(`/api/v1/posts/${id}/retweet`);
-  const retweetData = res.data;
-  console.log(retweetData);
+  const postData = res.data;
 
-  // const retweetsCountWrapper = retweetButton.querySelector("span");
-  // if (!retweetsCountWrapper) return;
-  // retweetsCountWrapper.textContent = `${postData.retweets.length || ""}`;
+  const retweetsCountWrapper = retweetButton.querySelector("span");
+  if (!retweetsCountWrapper) return;
+  retweetsCountWrapper.textContent = `${postData.retweetUsers.length || ""}`;
 
-  // const loggedInUserData = JSON.parse(
-  //   document.querySelector("body").dataset.loggedInUser
-  // );
+  const loggedInUserData = JSON.parse(
+    document.querySelector("body").dataset.loggedInUser
+  );
 
-  // if (postData.retweets.includes(loggedInUserData._id)) {
-  //   retweetButton.classList.add("active");
-  // } else {
-  //   retweetButton.classList.remove("active");
-  // }
+  if (postData.retweetUsers.includes(loggedInUserData._id)) {
+    retweetButton.classList.add("active");
+  } else {
+    retweetButton.classList.remove("active");
+  }
   // console.log("FROM KK", loggedInUserData);
 
   // console.log("What I get back...", res.data);
