@@ -1,3 +1,28 @@
-<%- include("layout/header-main") %>
-    <h1>Home page</h1>
+<%- include("layout/header-main", { user: userLoggedInJs}) %>
+
+
+    <div class="wrapper">
+        <div class="row">
+            <nav class="col-2"><a class="blue" href="/"><i class="fas fa-dove"></i></a><a href="/"><i
+                        class="fas fa-home"></i></a><a href="/search"><i class="fas fa-search"></i></a><a
+                    href="/notifications"><i class="fas fa-bell"></i></a><a href="/messages"><i
+                        class="fas fa-envelope"></i></a><a href="/profile"><i class="fas fa-user"></i></a><a
+                    href="/logout"><i class="fas fa-sign-out-alt"></i></a></nav>
+            <div class="mainSectionContainer col-10 col-md-8 col-lg-6">
+                <div class="titleContainer">
+                    <h1 data-user="<%= me %>">
+                        <%= pageTitle %>
+                    </h1>
+                </div>
+                <%- include("partials/post-form")%>
+
+                    <div class="postsContainer">
+                    </div>
+                    <%- include("partials/popup")%>
+
+            </div>
+            <div class="d-none d-md-block col-md-2 col-lg-4"><span>third column</span>
+            </div>
+        </div>
+    </div>
     <%- include("layout/footer-main") %>

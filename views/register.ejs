@@ -1,0 +1,33 @@
+<%- include("layout/header-login.ejs") %>
+    <div class="wrapper">
+        <div class="loginContainer">
+            <h1>Register</h1>
+
+            <form id="registerForm" method="post" onsubmit="event.preventDefault(); validateForm();">
+                <input type="text" name="firstName" placeholder="First name" required="" aria-label="First Name" />
+                <input type="text" name="lastName" placeholder="Last name" aria-label="Last Name" />
+                <input type="text" name="username" placeholder="Username" required="" aria-label="UserName" />
+                <input type="email" name="email" placeholder="Email" required="" aria-label="Email" />
+                <input id="password" type="password" name="password" placeholder="Password" required
+                    aria-label="Password" />
+                <input id="passwordConf" type="password" name="passwordConf" placeholder="Confirm password" required=""
+                    aria-label="Confirm Password" />
+                <input type="submit" value="Register" aria-label="Register Button" />
+            </form><a href="/login">Already have an account? Login here.</a>
+        </div>
+        <script>
+            const passwordField = document.getElementById("password")
+            const passwordConfirmField = document.getElementById("passwordConf")
+            const form = document.getElementById("registerForm")
+
+            function validateForm() {
+                if (passwordField.value != passwordConfirmField.value) {
+                    alert("Passwords do not match. Please try again.")
+                }
+                else {
+                    form.submit();
+                }
+            }
+        </script>
+    </div>
+    <%- include("layout/footer-login.ejs") %>

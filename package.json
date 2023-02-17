@@ -1,7 +1,14 @@
 {
   "dependencies": {
+    "axios": "^1.3.2",
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.1",
+    "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongodb": "^5.0.0",
+    "mongoose": "^6.9.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.20"
   },
@@ -9,10 +16,17 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "watch": "parcel watch ./public/js/index.js --out-dir ./public/js/dist --out-file bundle.js --log-level verbose",
+    "build": "parcel build ./public/js/index.js --out-dir ./public/js/dist --out-file bundle.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.34.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
+  }
 }
