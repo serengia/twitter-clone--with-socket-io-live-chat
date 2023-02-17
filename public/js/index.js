@@ -3,14 +3,12 @@ import { generatePostMarkup } from "./modules/generatePostMarkup";
 import { loadPosts } from "./modules/postsHandler";
 
 const postTextArea = document.getElementById("postTextarea");
-const postTextArea2 = document.getElementById("replyTextarea");
+const replyTextArea = document.getElementById("replyTextarea");
 const submitPostButton = document.getElementById("submitPostButton");
 const submitReplyButton = document.getElementById("submitReplyButton");
 const postsContainer = document.querySelector(".postsContainer");
 
-console.log("AREASSS", postTextArea, postTextArea2);
-
-[postTextArea, postTextArea2].forEach((ele) => {
+[postTextArea, replyTextArea].forEach((ele) => {
   ele.addEventListener("keyup", (e) => {
     const textbox = e.target;
     const value = textbox.value.trim();
@@ -27,20 +25,34 @@ console.log("AREASSS", postTextArea, postTextArea2);
   });
 });
 
-submitPostButton.addEventListener("click", async () => {
-  const data = { content: postTextArea.value };
-  try {
-    const res = await axios.post("/api/v1/posts", data);
-    console.log("DATAA>", res.data);
+[submitPostButton, submitReplyButton].forEach((ele) => {
+  ele.addEventListener("click", async (e) => {
+    const isModal = e.target.closest(".modal");
+    let data;
+    if (isModal) {
+      const id = submitReplyButton.dataset.id;
+      console.log("Id>>", id);
 
-    const postMarkup = generatePostMarkup(res.data);
-    postsContainer.insertAdjacentHTML("afterbegin", postMarkup);
-    submitPostButton.setAttribute("disabled", true);
-    postTextArea.value = "";
-    console.log(res);
-  } catch (error) {
-    console.log("SEE ERROR>>", error);
-  }
+      data = { content: replyTextArea.value, replyTo: id };
+    } else {
+      data = { content: postTextArea.value };
+    }
+
+    try {
+      const res = await axios.post("/api/v1/posts", data);
+      console.log("DATAA>", res.data);
+      // eslint-disable-next-line no-restricted-globals
+      if (res.data.replyTo) return location.reload();
+
+      const postMarkup = generatePostMarkup(res.data);
+      postsContainer.insertAdjacentHTML("afterbegin", postMarkup);
+
+      submitPostButton.setAttribute("disabled", true);
+      postTextArea.value = "";
+    } catch (error) {
+      console.log("SEE ERROR>>", error);
+    }
+  });
 });
 
 // Load posts
@@ -98,3 +110,25 @@ postsContainer.addEventListener("click", async (e) => {
 
   // console.log("What I get back...", res.data);
 });
+
+// populate modal on modal load
+document
+  .getElementById("replyModal")
+  .addEventListener("shown.bs.modal", async (e) => {
+    const id = e.relatedTarget.closest(".post").dataset.id;
+    if (!id) return;
+    const res = await axios.get(`/api/v1/posts/${id}`);
+    const markup = generatePostMarkup(res.data);
+    document.getElementById("originalPostContainer").innerHTML = markup;
+
+    const submitReplyBtn = document.getElementById("submitReplyButton");
+
+    submitReplyBtn.setAttribute("data-id", id);
+  });
+
+// clear post when modal close
+document
+  .getElementById("replyModal")
+  .addEventListener("hidden.bs.modal", async () => {
+    document.getElementById("originalPostContainer").innerHTML = "";
+  });

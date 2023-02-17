@@ -1,6 +1,26 @@
 const Post = require("../models/postSchema");
 const User = require("../models/userSchema");
 
+async function getPosts(filterObj) {
+  try {
+    let results = await Post.find(filterObj)
+      .populate("postedBy")
+      .populate("retweetData")
+      .populate("replyTo")
+      .sort({ createdAt: -1 });
+
+    results = await User.populate(results, {
+      path: "replyTo.postedBy",
+    });
+
+    return await User.populate(results, {
+      path: "retweetData.postedBy",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 exports.createPost = async (req, res, next) => {
   if (!req.body.content) {
     console.log("Content param not sent with request");
@@ -12,6 +32,8 @@ exports.createPost = async (req, res, next) => {
     postedBy: req.session.user,
   };
 
+  if (req.body.replyTo) postData.replyTo = req.body.replyTo;
+
   const newPost = await Post.create(postData);
 
   if (!newPost) {
@@ -22,16 +44,9 @@ exports.createPost = async (req, res, next) => {
   res.status(201).send(populatedPost);
 };
 
-exports.getPosts = async (req, res) => {
+exports.getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find()
-      .populate("postedBy")
-      .populate("retweetData")
-      .sort({ createdAt: -1 });
-
-    const results = await User.populate(posts, {
-      path: "retweetData.postedBy",
-    });
+    const results = await getPosts({});
     res.status(200).send(results);
   } catch (error) {
     console.log(error);
@@ -69,5 +84,15 @@ exports.updatePostLikes = async (req, res) => {
     console.log(error);
 
     res.status(400);
+  }
+};
+
+exports.getSinglePost = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const post = await getPosts({ _id: id });
+    res.status(200).send(post[0]);
+  } catch (error) {
+    res.sendStatus(400);
   }
 };
