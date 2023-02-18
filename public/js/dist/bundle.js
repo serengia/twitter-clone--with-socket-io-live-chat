@@ -5448,7 +5448,7 @@ function generatePostMarkup(postDataObj) {
     retweetText = "<span>\n                        <i class='fas fa-retweet'></i>\n                        Retweeted by <a href='/profile/".concat(retweetedBy, "'>@").concat(retweetedBy, "</a>    \n                    </span>");
   }
   var replyFlag = "";
-  if (postData.replyTo) {
+  if (postData.replyTo && postData.replyTo._id) {
     if (!postData.replyTo._id) {
       return alert("Reply to is not populated");
     }
@@ -5637,6 +5637,8 @@ postsContainer.addEventListener("click", /*#__PURE__*/function () {
     return _ref2.apply(this, arguments);
   };
 }());
+
+// Retweet handler
 postsContainer.addEventListener("click", /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
     var retweetButton, id, res, postData, retweetsCountWrapper, loggedInUserData;
@@ -5729,6 +5731,16 @@ document.getElementById("replyModal").addEventListener("hidden.bs.modal", /*#__P
     }
   }, _callee5);
 })));
+
+// Click tweet handler
+postsContainer.addEventListener("click", function (e) {
+  var post = e.target.closest(".post");
+  var id = post.dataset.id;
+  if (e.target.closest(".postFooter")) return;
+  if (id) {
+    window.location.href = "/posts/".concat(id);
+  }
+});
 },{"axios":"../../node_modules/axios/index.js","./modules/generatePostMarkup":"modules/generatePostMarkup.js","./modules/postsHandler":"modules/postsHandler.js"}],"C:/Users/serengia/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -5754,7 +5766,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50663" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56196" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

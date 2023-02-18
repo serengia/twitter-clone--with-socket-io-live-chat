@@ -84,6 +84,7 @@ postsContainer.addEventListener("click", async (e) => {
   console.log("What I get back...", res.data);
 });
 
+// Retweet handler
 postsContainer.addEventListener("click", async (e) => {
   const retweetButton = e.target.closest(".retweetButton");
 
@@ -132,3 +133,13 @@ document
   .addEventListener("hidden.bs.modal", async () => {
     document.getElementById("originalPostContainer").innerHTML = "";
   });
+
+// Click tweet handler
+postsContainer.addEventListener("click", (e) => {
+  const post = e.target.closest(".post");
+  const id = post.dataset.id;
+  if (e.target.closest(".postFooter")) return;
+  if (id) {
+    window.location.href = `/posts/${id}`;
+  }
+});

@@ -1,6 +1,4 @@
-<%- include("layout/header-main", { user: userLoggedInJs}) %>
-
-
+<%- include("layout/header-main.ejs") %>
     <div class="wrapper">
         <div class="row">
             <%- include("partials/header-nav.ejs") %>
@@ -10,15 +8,14 @@
                             <%= pageTitle %>
                         </h1>
                     </div>
-                    <%- include("partials/post-form")%>
 
-                        <div class="postsContainer">
-                        </div>
-                        <%- include("partials/popup")%>
+                    <div class="postsContainer">
+                    </div>
+
 
                 </div>
                 <div class="d-none d-md-block col-md-2 col-lg-4"><span>third column</span>
                 </div>
         </div>
     </div>
-    <%- include("layout/footer-main") %>
+    <%- include("layout/footer-main.ejs") %>

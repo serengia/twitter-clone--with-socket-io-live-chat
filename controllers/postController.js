@@ -9,13 +9,8 @@ async function getPosts(filterObj) {
       .populate("replyTo")
       .sort({ createdAt: -1 });
 
-    results = await User.populate(results, {
-      path: "replyTo.postedBy",
-    });
-
-    return await User.populate(results, {
-      path: "retweetData.postedBy",
-    });
+    results = await User.populate(results, { path: "replyTo.postedBy" });
+    return await User.populate(results, { path: "retweetData.postedBy" });
   } catch (error) {
     console.log(error);
   }
