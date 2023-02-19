@@ -5672,9 +5672,6 @@ postsContainer.addEventListener("click", /*#__PURE__*/function () {
           } else {
             retweetButton.classList.remove("active");
           }
-          // console.log("FROM KK", loggedInUserData);
-
-          // console.log("What I get back...", res.data);
         case 14:
         case "end":
           return _context3.stop();
@@ -5766,7 +5763,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56196" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53638" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

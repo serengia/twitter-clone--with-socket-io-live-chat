@@ -107,9 +107,6 @@ postsContainer.addEventListener("click", async (e) => {
   } else {
     retweetButton.classList.remove("active");
   }
-  // console.log("FROM KK", loggedInUserData);
-
-  // console.log("What I get back...", res.data);
 });
 
 // populate modal on modal load

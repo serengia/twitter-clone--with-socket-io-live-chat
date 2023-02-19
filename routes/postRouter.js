@@ -6,7 +6,10 @@ const router = express.Router();
 
 router.get("/:id", isAuthenticated, (req, res) => {
   const payload = {
-    pageTitle: "View page",
+    pageTitle: "View details",
+    userLoggedIn: req.session.user,
+    userLoggedInJs: JSON.stringify(req.session.user),
+    postId: req.params.id,
   };
   res.status(200).render("postPage", payload);
 });

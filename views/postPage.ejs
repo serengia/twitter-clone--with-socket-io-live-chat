@@ -1,21 +1,27 @@
-<%- include("layout/header-main.ejs") %>
-    <div class="wrapper">
-        <div class="row">
-            <%- include("partials/header-nav.ejs") %>
-                <div class="mainSectionContainer col-10 col-md-8 col-lg-6">
-                    <div class="titleContainer">
-                        <h1 data-user="<%= me %>">
-                            <%= pageTitle %>
-                        </h1>
+<%- include("layout/header-common-assets") %>
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <div class="row">
+                <%- include("partials/header-nav.ejs") %>
+                    <div class="mainSectionContainer col-10 col-md-8 col-lg-6">
+                        <div class="titleContainer">
+                            <h1 data-user="<%= me %>">
+                                <%= pageTitle %>
+                            </h1>
+                        </div>
+
+                        <div class="postsContainer">
+                        </div>
+
+
                     </div>
-
-                    <div class="postsContainer">
+                    <div class="d-none d-md-block col-md-2 col-lg-4"><span>third column</span>
                     </div>
-
-
-                </div>
-                <div class="d-none d-md-block col-md-2 col-lg-4"><span>third column</span>
-                </div>
+            </div>
         </div>
-    </div>
-    <%- include("layout/footer-main.ejs") %>
+
+        <%- include("layout/footer-layout") %>
+            <%- include("layout/footer-common-assets") %>
+                <script src=""></script>

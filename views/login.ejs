@@ -1,16 +1,20 @@
-<%- include("layout/header-login.ejs") %>
+<%- include("layout/header-common-assets") %>
 
-    <div class="wrapper">
-        <div class="loginContainer">
+    </head>
 
-            <h1>Login</h1>
-            <form method="post">
-                <input type="text" name="logUsername" placeholder="Username or email" required="" value="seree"
-                    aria-label="Username or Email" />
-                <input type="password" name="logPassword" placeholder="Password" required="" value="pass"
-                    aria-label="Password" />
-                <input type="submit" value="Login" aria-label="Login button" />
-            </form><a href="/register">Need an account? Register here.</a>
+    <body>
+        <div class="wrapper">
+            <div class="loginContainer">
+
+                <h1>Login</h1>
+                <form method="post">
+                    <input type="text" name="logUsername" placeholder="Username or email" required="" value="seree"
+                        aria-label="Username or Email" />
+                    <input type="password" name="logPassword" placeholder="Password" required="" value="pass"
+                        aria-label="Password" />
+                    <input type="submit" value="Login" aria-label="Login button" />
+                </form><a href="/register">Need an account? Register here.</a>
+            </div>
         </div>
-    </div>
-    <%- include("layout/footer-login.ejs") %>
+        <%- include("layout/footer-layout") %>
+            <%- include("layout/footer-common-assets") %>
