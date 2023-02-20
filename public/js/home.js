@@ -28,7 +28,7 @@ const home = () => {
   });
 
   [submitPostButton, submitReplyButton].forEach((ele) => {
-    ele.addEventListener("click", async (e) => {
+    ele?.addEventListener("click", async (e) => {
       const isModal = e.target.closest(".modal");
       let data;
       if (isModal) {
@@ -81,9 +81,9 @@ const home = () => {
     } else {
       likeButton.classList.remove("active");
     }
-    console.log("FROM KK", loggedInUserData);
+    // console.log("FROM KK", loggedInUserData);
 
-    console.log("What I get back...", res.data);
+    // console.log("What I get back...", res.data);
   });
 
   // Retweet handler
