@@ -1,8 +1,7 @@
 <%- include("layout/header-common-assets") %>
-
     </head>
 
-    <body data-logged-in-user='<%= me%>'>
+    <body>
         <div class="wrapper">
             <div class="row">
                 <%- include("partials/header-nav.ejs") %>
@@ -12,11 +11,10 @@
                                 <%= pageTitle %>
                             </h1>
                         </div>
-                        <%- include("partials/post-form")%>
 
-                            <div class="postsContainer">
-                            </div>
-                            <%- include("partials/popup")%>
+                        <div class="postsContainer">
+                        </div>
+
 
                     </div>
                     <div class="d-none d-md-block col-md-2 col-lg-4"><span>third column</span>
@@ -26,3 +24,4 @@
 
         <%- include("layout/footer-layout") %>
             <%- include("layout/footer-common-assets") %>
+                <script src=""></script>

@@ -5448,7 +5448,7 @@ function generatePostMarkup(postDataObj) {
     retweetText = "<span>\n                        <i class='fas fa-retweet'></i>\n                        Retweeted by <a href='/profile/".concat(retweetedBy, "'>@").concat(retweetedBy, "</a>    \n                    </span>");
   }
   var replyFlag = "";
-  if (postData.replyTo) {
+  if (postData.replyTo && postData.replyTo._id) {
     if (!postData.replyTo._id) {
       return alert("Reply to is not populated");
     }
@@ -5506,9 +5506,13 @@ var loadPosts = /*#__PURE__*/function () {
   };
 }();
 exports.loadPosts = loadPosts;
-},{"axios":"../../node_modules/axios/index.js","./generatePostMarkup":"modules/generatePostMarkup.js"}],"index.js":[function(require,module,exports) {
+},{"axios":"../../node_modules/axios/index.js","./generatePostMarkup":"modules/generatePostMarkup.js"}],"home.js":[function(require,module,exports) {
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 var _generatePostMarkup = require("./modules/generatePostMarkup");
 var _postsHandler = require("./modules/postsHandler");
@@ -5522,214 +5526,247 @@ var replyTextArea = document.getElementById("replyTextarea");
 var submitPostButton = document.getElementById("submitPostButton");
 var submitReplyButton = document.getElementById("submitReplyButton");
 var postsContainer = document.querySelector(".postsContainer");
-[postTextArea, replyTextArea].forEach(function (ele) {
-  ele.addEventListener("keyup", function (e) {
-    var textbox = e.target;
-    var value = textbox.value.trim();
-    var isModel = textbox.closest(".modal");
-    var submitButton = isModel ? submitReplyButton : submitPostButton;
-    if (value.length === 0) {
-      submitButton.setAttribute("disabled", true);
-    } else {
-      submitButton.removeAttribute("disabled");
-    }
+var home = function home() {
+  // home page entry file
+  [postTextArea, replyTextArea].forEach(function (ele) {
+    ele.addEventListener("keyup", function (e) {
+      var textbox = e.target;
+      var value = textbox.value.trim();
+      var isModel = textbox.closest(".modal");
+      var submitButton = isModel ? submitReplyButton : submitPostButton;
+      if (value.length === 0) {
+        submitButton.setAttribute("disabled", true);
+      } else {
+        submitButton.removeAttribute("disabled");
+      }
+    });
   });
-});
-[submitPostButton, submitReplyButton].forEach(function (ele) {
-  ele.addEventListener("click", /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
-      var isModal, data, id, res, postMarkup;
-      return _regeneratorRuntime().wrap(function _callee$(_context) {
-        while (1) switch (_context.prev = _context.next) {
+  [submitPostButton, submitReplyButton].forEach(function (ele) {
+    ele === null || ele === void 0 ? void 0 : ele.addEventListener("click", /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
+        var isModal, data, id, res, postMarkup;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              isModal = e.target.closest(".modal");
+              if (isModal) {
+                id = submitReplyButton.dataset.id;
+                console.log("Id>>", id);
+                data = {
+                  content: replyTextArea.value,
+                  replyTo: id
+                };
+              } else {
+                data = {
+                  content: postTextArea.value
+                };
+              }
+              _context.prev = 2;
+              _context.next = 5;
+              return _axios.default.post("/api/v1/posts", data);
+            case 5:
+              res = _context.sent;
+              console.log("DATAA>", res.data);
+              // eslint-disable-next-line no-restricted-globals
+              if (!res.data.replyTo) {
+                _context.next = 9;
+                break;
+              }
+              return _context.abrupt("return", location.reload());
+            case 9:
+              postMarkup = (0, _generatePostMarkup.generatePostMarkup)(res.data);
+              postsContainer.insertAdjacentHTML("afterbegin", postMarkup);
+              submitPostButton.setAttribute("disabled", true);
+              postTextArea.value = "";
+              _context.next = 18;
+              break;
+            case 15:
+              _context.prev = 15;
+              _context.t0 = _context["catch"](2);
+              console.log("SEE ERROR>>", _context.t0);
+            case 18:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee, null, [[2, 15]]);
+      }));
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }());
+  });
+
+  // Load posts
+  (0, _postsHandler.loadPosts)(postsContainer);
+  postsContainer.addEventListener("click", /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
+      var likeButton, id, res, postData, likesCountWrapper, loggedInUserData;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
           case 0:
-            isModal = e.target.closest(".modal");
-            if (isModal) {
-              id = submitReplyButton.dataset.id;
-              console.log("Id>>", id);
-              data = {
-                content: replyTextArea.value,
-                replyTo: id
-              };
-            } else {
-              data = {
-                content: postTextArea.value
-              };
-            }
-            _context.prev = 2;
-            _context.next = 5;
-            return _axios.default.post("/api/v1/posts", data);
-          case 5:
-            res = _context.sent;
-            console.log("DATAA>", res.data);
-            // eslint-disable-next-line no-restricted-globals
-            if (!res.data.replyTo) {
-              _context.next = 9;
+            likeButton = e.target.closest(".likeButton");
+            if (likeButton) {
+              _context2.next = 3;
               break;
             }
-            return _context.abrupt("return", location.reload());
-          case 9:
-            postMarkup = (0, _generatePostMarkup.generatePostMarkup)(res.data);
-            postsContainer.insertAdjacentHTML("afterbegin", postMarkup);
-            submitPostButton.setAttribute("disabled", true);
-            postTextArea.value = "";
-            _context.next = 18;
-            break;
-          case 15:
-            _context.prev = 15;
-            _context.t0 = _context["catch"](2);
-            console.log("SEE ERROR>>", _context.t0);
-          case 18:
+            return _context2.abrupt("return");
+          case 3:
+            id = likeButton.closest(".post").dataset.id;
+            _context2.next = 6;
+            return _axios.default.patch("/api/v1/posts/".concat(id, "/like"));
+          case 6:
+            res = _context2.sent;
+            postData = res.data;
+            likesCountWrapper = likeButton.querySelector("span");
+            if (likesCountWrapper) {
+              _context2.next = 11;
+              break;
+            }
+            return _context2.abrupt("return");
+          case 11:
+            likesCountWrapper.textContent = "".concat(postData.likes.length || "");
+            loggedInUserData = JSON.parse(document.querySelector("body").dataset.loggedInUser);
+            if (postData.likes.includes(loggedInUserData._id)) {
+              likeButton.classList.add("active");
+            } else {
+              likeButton.classList.remove("active");
+            }
+            // console.log("FROM KK", loggedInUserData);
+
+            // console.log("What I get back...", res.data);
+          case 14:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
-      }, _callee, null, [[2, 15]]);
+      }, _callee2);
     }));
-    return function (_x) {
-      return _ref.apply(this, arguments);
+    return function (_x2) {
+      return _ref2.apply(this, arguments);
     };
   }());
-});
 
-// Load posts
-(0, _postsHandler.loadPosts)(postsContainer);
-postsContainer.addEventListener("click", /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
-    var likeButton, id, res, postData, likesCountWrapper, loggedInUserData;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
+  // Retweet handler
+  postsContainer.addEventListener("click", /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
+      var retweetButton, id, res, postData, retweetsCountWrapper, loggedInUserData;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            retweetButton = e.target.closest(".retweetButton");
+            if (retweetButton) {
+              _context3.next = 3;
+              break;
+            }
+            return _context3.abrupt("return");
+          case 3:
+            id = retweetButton.closest(".post").dataset.id;
+            _context3.next = 6;
+            return _axios.default.post("/api/v1/posts/".concat(id, "/retweet"));
+          case 6:
+            res = _context3.sent;
+            postData = res.data;
+            retweetsCountWrapper = retweetButton.querySelector("span");
+            if (retweetsCountWrapper) {
+              _context3.next = 11;
+              break;
+            }
+            return _context3.abrupt("return");
+          case 11:
+            retweetsCountWrapper.textContent = "".concat(postData.retweetUsers.length || "");
+            loggedInUserData = JSON.parse(document.querySelector("body").dataset.loggedInUser);
+            if (postData.retweetUsers.includes(loggedInUserData._id)) {
+              retweetButton.classList.add("active");
+            } else {
+              retweetButton.classList.remove("active");
+            }
+          case 14:
+          case "end":
+            return _context3.stop();
+        }
+      }, _callee3);
+    }));
+    return function (_x3) {
+      return _ref3.apply(this, arguments);
+    };
+  }());
+
+  // populate modal on modal load
+  document.getElementById("replyModal").addEventListener("shown.bs.modal", /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(e) {
+      var id, res, markup, submitReplyBtn;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            id = e.relatedTarget.closest(".post").dataset.id;
+            if (id) {
+              _context4.next = 3;
+              break;
+            }
+            return _context4.abrupt("return");
+          case 3:
+            _context4.next = 5;
+            return _axios.default.get("/api/v1/posts/".concat(id));
+          case 5:
+            res = _context4.sent;
+            markup = (0, _generatePostMarkup.generatePostMarkup)(res.data);
+            document.getElementById("originalPostContainer").innerHTML = markup;
+            submitReplyBtn = document.getElementById("submitReplyButton");
+            submitReplyBtn.setAttribute("data-id", id);
+          case 10:
+          case "end":
+            return _context4.stop();
+        }
+      }, _callee4);
+    }));
+    return function (_x4) {
+      return _ref4.apply(this, arguments);
+    };
+  }());
+
+  // clear post when modal close
+  document.getElementById("replyModal").addEventListener("hidden.bs.modal", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
         case 0:
-          likeButton = e.target.closest(".likeButton");
-          if (likeButton) {
-            _context2.next = 3;
-            break;
-          }
-          return _context2.abrupt("return");
-        case 3:
-          id = likeButton.closest(".post").dataset.id;
-          _context2.next = 6;
-          return _axios.default.patch("/api/v1/posts/".concat(id, "/like"));
-        case 6:
-          res = _context2.sent;
-          postData = res.data;
-          likesCountWrapper = likeButton.querySelector("span");
-          if (likesCountWrapper) {
-            _context2.next = 11;
-            break;
-          }
-          return _context2.abrupt("return");
-        case 11:
-          likesCountWrapper.textContent = "".concat(postData.likes.length || "");
-          loggedInUserData = JSON.parse(document.querySelector("body").dataset.loggedInUser);
-          if (postData.likes.includes(loggedInUserData._id)) {
-            likeButton.classList.add("active");
-          } else {
-            likeButton.classList.remove("active");
-          }
-          console.log("FROM KK", loggedInUserData);
-          console.log("What I get back...", res.data);
-        case 16:
+          document.getElementById("originalPostContainer").innerHTML = "";
+        case 1:
         case "end":
-          return _context2.stop();
+          return _context5.stop();
       }
-    }, _callee2);
-  }));
-  return function (_x2) {
-    return _ref2.apply(this, arguments);
-  };
-}());
-postsContainer.addEventListener("click", /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
-    var retweetButton, id, res, postData, retweetsCountWrapper, loggedInUserData;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
-        case 0:
-          retweetButton = e.target.closest(".retweetButton");
-          if (retweetButton) {
-            _context3.next = 3;
-            break;
-          }
-          return _context3.abrupt("return");
-        case 3:
-          id = retweetButton.closest(".post").dataset.id;
-          _context3.next = 6;
-          return _axios.default.post("/api/v1/posts/".concat(id, "/retweet"));
-        case 6:
-          res = _context3.sent;
-          postData = res.data;
-          retweetsCountWrapper = retweetButton.querySelector("span");
-          if (retweetsCountWrapper) {
-            _context3.next = 11;
-            break;
-          }
-          return _context3.abrupt("return");
-        case 11:
-          retweetsCountWrapper.textContent = "".concat(postData.retweetUsers.length || "");
-          loggedInUserData = JSON.parse(document.querySelector("body").dataset.loggedInUser);
-          if (postData.retweetUsers.includes(loggedInUserData._id)) {
-            retweetButton.classList.add("active");
-          } else {
-            retweetButton.classList.remove("active");
-          }
-          // console.log("FROM KK", loggedInUserData);
+    }, _callee5);
+  })));
 
-          // console.log("What I get back...", res.data);
-        case 14:
-        case "end":
-          return _context3.stop();
-      }
-    }, _callee3);
-  }));
-  return function (_x3) {
-    return _ref3.apply(this, arguments);
-  };
-}());
-
-// populate modal on modal load
-document.getElementById("replyModal").addEventListener("shown.bs.modal", /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(e) {
-    var id, res, markup, submitReplyBtn;
-    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-      while (1) switch (_context4.prev = _context4.next) {
-        case 0:
-          id = e.relatedTarget.closest(".post").dataset.id;
-          if (id) {
-            _context4.next = 3;
-            break;
-          }
-          return _context4.abrupt("return");
-        case 3:
-          _context4.next = 5;
-          return _axios.default.get("/api/v1/posts/".concat(id));
-        case 5:
-          res = _context4.sent;
-          markup = (0, _generatePostMarkup.generatePostMarkup)(res.data);
-          document.getElementById("originalPostContainer").innerHTML = markup;
-          submitReplyBtn = document.getElementById("submitReplyButton");
-          submitReplyBtn.setAttribute("data-id", id);
-        case 10:
-        case "end":
-          return _context4.stop();
-      }
-    }, _callee4);
-  }));
-  return function (_x4) {
-    return _ref4.apply(this, arguments);
-  };
-}());
-
-// clear post when modal close
-document.getElementById("replyModal").addEventListener("hidden.bs.modal", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
-  return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-    while (1) switch (_context5.prev = _context5.next) {
-      case 0:
-        document.getElementById("originalPostContainer").innerHTML = "";
-      case 1:
-      case "end":
-        return _context5.stop();
+  // Click tweet handler
+  postsContainer.addEventListener("click", function (e) {
+    var post = e.target.closest(".post");
+    var id = post.dataset.id;
+    if (e.target.closest(".postFooter")) return;
+    if (id) {
+      window.location.href = "/posts/".concat(id);
     }
-  }, _callee5);
-})));
-},{"axios":"../../node_modules/axios/index.js","./modules/generatePostMarkup":"modules/generatePostMarkup.js","./modules/postsHandler":"modules/postsHandler.js"}],"C:/Users/serengia/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+  });
+};
+var _default = home;
+exports.default = _default;
+},{"axios":"../../node_modules/axios/index.js","./modules/generatePostMarkup":"modules/generatePostMarkup.js","./modules/postsHandler":"modules/postsHandler.js"}],"postPage.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var postPage = function postPage() {};
+var _default = postPage;
+exports.default = _default;
+},{}],"index.js":[function(require,module,exports) {
+"use strict";
+
+var _home = _interopRequireDefault(require("./home"));
+var _postPage = _interopRequireDefault(require("./postPage"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+(0, _home.default)();
+(0, _postPage.default)();
+},{"./home":"home.js","./postPage":"postPage.js"}],"C:/Users/serengia/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -5754,7 +5791,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50663" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58538" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

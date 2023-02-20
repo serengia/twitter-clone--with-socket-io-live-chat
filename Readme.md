@@ -17,6 +17,12 @@ This is a twitter clone application build with Node js, Express, Mongo DB, Ejs a
 
 - **Almost all twitter functionalities... To update later**
 
+<!-- LIVE DEMO -->
+
+## Live Demo <a name="live-demo"></a>
+
+Coming soon...
+
 <!-- GETTING STARTED -->
 
 ## Getting Started <a name="getting-started"></a>
@@ -29,7 +35,7 @@ To get a local copy up and running follow these simple example steps.
 npm install
 ```
 
-To start the app in your local environment and  run
+To start the app in your local environment and run
 
 ```js
 npm start

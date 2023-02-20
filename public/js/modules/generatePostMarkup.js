@@ -35,15 +35,17 @@ export function generatePostMarkup(postDataObj) {
   }
 
   let replyFlag = "";
-  if (postData.replyTo) {
+  if (postData.replyTo && postData.replyTo._id) {
     if (!postData.replyTo._id) {
       return alert("Reply to is not populated");
     }
+
     if (!postData.replyTo.postedBy._id) {
       return alert("Posted by is not populated");
     }
 
     const replyToUsername = postData.replyTo.postedBy.username;
+
     replyFlag = `<div class='replyFlag'>
                       Replying to <a href='/profile/${replyToUsername}'>@${replyToUsername}<a>
                   </div>`;

@@ -5,7 +5,8 @@ const path = require("path");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 
-const postRouter = require("./routes/api/postRouter");
+const postApiRouter = require("./routes/api/postApiRouter");
+const postRouter = require("./routes/postRouter");
 const loginRouter = require("./routes/loginRouter");
 const registerRouter = require("./routes/registerRouter");
 const logoutRouter = require("./routes/logoutRouter");
@@ -21,7 +22,7 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.json());
 
 // Setting up sessions
@@ -36,9 +37,10 @@ app.use(
 app.use("/login", loginRouter);
 app.use("/register", registerRouter);
 app.use("/logout", logoutRouter);
-app.use("/api/v1/posts", postRouter);
+app.use("/api/v1/posts", postApiRouter);
+app.use("/posts", postRouter);
 
-app.use("/", isAuthenticated, (req, res, next) => {
+app.get("/", isAuthenticated, (req, res, next) => {
   const payload = {
     pageTitle: "Home page",
     userLoggedIn: req.session.user,

@@ -10,6 +10,7 @@
     "mongodb": "^5.0.0",
     "mongoose": "^6.9.1",
     "morgan": "^1.10.0",
+    "ndb": "^1.1.5",
     "nodemon": "^2.0.20"
   },
   "name": "twitter-clone",
@@ -17,8 +18,9 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "watch": "parcel watch ./public/js/index.js --out-dir ./public/js/dist --out-file bundle.js --log-level verbose",
-    "build": "parcel build ./public/js/index.js --out-dir ./public/js/dist --out-file bundle.js"
+    "watch": "parcel watch ./public/js/index.js --out-dir ./public/js/dist --out-file bundle.js",
+    "build": "parcel build ./public/js/index.js --out-dir ./public/js/dist --out-file bundle.js",
+    "debug": "ndb app.js"
   },
   "keywords": [],
   "author": "",

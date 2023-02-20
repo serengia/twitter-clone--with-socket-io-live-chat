@@ -235,6 +235,19 @@ button span {
   color: var(--blue);
 }
 
+.post.largeFont .postBody,
+.post.largeFont .postFooter {
+  font-size: 23px;
+}
+
+.postContentContainer .header {
+  display: flex;
+}
+
+.postContentContainer .header .date {
+  flex: 1;
+}
+
 /* my overides */
 a {
   text-decoration: none;
